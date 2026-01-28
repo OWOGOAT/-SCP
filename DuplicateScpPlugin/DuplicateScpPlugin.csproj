@@ -1,11 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="LabAPI" Version="1.*" />
-  </ItemGroup>
-</Project>
+<ItemGroup>
+  <Reference Include="LabAPI">
+    <HintPath>libs/LabAPI.dll</HintPath>
+    <Private>false</Private>
+  </Reference>
+</ItemGroup>
