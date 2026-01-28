@@ -1,0 +1,49 @@
+name: Build
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Debug workspace
+        shell: bash
+        run: |
+          echo "Repo root files:"
+          ls -la
+          echo "Found csproj files:"
+          find . -name '*.csproj' -print
+          csproj_list=$(find . -name '*.csproj' -print)
+          selected=$(printf "%s\n" "$csproj_list" | grep -m1 'DuplicateScpPlugin/' || true)
+          if [ -z "$selected" ]; then
+            selected=$(printf "%s\n" "$csproj_list" | head -n 1)
+          fi
+          if [ -z "$selected" ]; then
+            echo "No csproj found."
+            exit 1
+          fi
+          echo "Selected csproj: $selected"
+          echo "CSProjPath=$selected" >> "$GITHUB_ENV"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        run: dotnet restore "${{ env.CSProjPath }}"
+
+      - name: Build
+        run: dotnet build "${{ env.CSProjPath }}" -c Release --no-restore
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DuplicateScpPlugin
+          path: "**/bin/Release/**/DuplicateScpPlugin.dll"
