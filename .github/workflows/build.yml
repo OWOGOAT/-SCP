@@ -19,14 +19,13 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restore
-      run: dotnet restore
+      run: dotnet restore DuplicateScpPlugin/DuplicateScpPlugin.csproj
 
     - name: Build
-      run: dotnet build -c Release
+      run: dotnet build DuplicateScpPlugin/DuplicateScpPlugin.csproj -c Release --no-restore
 
     - name: Upload DLL
       uses: actions/upload-artifact@v4
       with:
         name: DuplicateScpPlugin
-        path: |
-          **/bin/Release/**/*.dll
+        path: DuplicateScpPlugin/bin/Release/**/DuplicateScpPlugin.dll
